@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { Metadata } from "next";
 import NotesClient from "./Notes.client";
-import { fetchNotes } from "@/lib/api/clientApi";
+import { fetchNotes } from "@/lib/api/serverApi";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const displayTag = tag === "all" ? "All notes" : tag;
   const title = `${displayTag} | NoteHub`;
   const description = `Explore your notes in the "${displayTag}" category. Stay organized with NoteHub.`;
-  const url = `https://your-app-name.vercel.app/notes/filter/${tag}`; // Заміни на свій домен
+  const url = `https://your-app-name.vercel.app/notes/filter/${tag}`;
 
   return {
     title,

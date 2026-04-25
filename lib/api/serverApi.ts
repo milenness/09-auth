@@ -1,8 +1,9 @@
 import { axiosInstance } from "./api";
 import { cookies } from "next/headers";
+import type { AxiosResponse } from "axios"; // Додано для типізації
 import type { Note } from "@/types/note";
 import type { User } from "@/types/user";
-import type { FetchNotesParams } from "./clientApi"; 
+import type { FetchNotesParams } from "./clientApi";
 
 const getServerHeaders = async () => {
   const cookieStore = await cookies();
@@ -31,8 +32,8 @@ export const getMe = async (): Promise<User> => {
   return res.data;
 };
 
-export const getSession = async (): Promise<User | null> => {
+export const getSession = async (): Promise<AxiosResponse<User>> => {
   const headers = await getServerHeaders();
-  const res = await axiosInstance.get("/auth/session", headers);
-  return res.data;
+  // Повертаємо весь об'єкт res, а не res.data
+  return await axiosInstance.get("/auth/session", headers);
 };

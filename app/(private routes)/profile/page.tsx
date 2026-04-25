@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { getMe } from "@/lib/api/serverApi";
 import css from "./ProfilePage.module.css";
 
 export const metadata: Metadata = {
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
   description: "Your personal profile page on NoteHub",
 };
 
-export default function Profile() {
+export default async function Profile() {
+  const user = await getMe();
+
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
@@ -21,8 +24,8 @@ export default function Profile() {
 
         <div className={css.avatarWrapper}>
           <Image
-            src="https://ac.goit.global/default-avatar.png"
-            alt="User Avatar"
+            src={user.avatar || "https://ac.goit.global/default-avatar.png"}
+            alt={`${user.username}'s avatar`}
             width={120}
             height={120}
             className={css.avatar}
@@ -31,8 +34,8 @@ export default function Profile() {
         </div>
 
         <div className={css.profileInfo}>
-          <p>Username: your_username</p>
-          <p>Email: your_email@example.com</p>
+          <p>Username: {user.username}</p>
+          <p>Email: {user.email}</p>
         </div>
       </div>
     </main>

@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { fetchNoteById } from "@/lib/api/clientApi";
+import { fetchNoteById } from "@/lib/api/serverApi";
 import NoteDetailsClient from "./NoteDetails.client";
 
 type Props = {
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? note.content.substring(0, 157) + "..."
       : note.content;
 
-  const url = `https://your-app-domain.vercel.app/notes/${id}`; 
+  const url = `https://your-app-domain.vercel.app/notes/${id}`;
 
   return {
     title,
