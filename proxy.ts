@@ -11,28 +11,38 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/profile") || pathname.startsWith("/notes");
 
   let isAuthorized = !!accessToken;
+  let apiCookies: string[] | undefined;
 
   if (!isAuthorized && refreshToken) {
     try {
-      const response = await getSession();
-
-      if (response && response.data) {
+      const apiRes = await getSession();
+      if (apiRes && apiRes.data) {
         isAuthorized = true;
+
+        apiCookies = apiRes.headers["set-cookie"];
       }
     } catch {
       isAuthorized = false;
     }
   }
 
+  let response: NextResponse;
+
   if (!isAuthorized && isPrivateRoute) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+    response = NextResponse.redirect(new URL("/sign-in", request.url));
+  } else if (isAuthorized && isPublicRoute) {
+    response = NextResponse.redirect(new URL("/", request.url));
+  } else {
+    response = NextResponse.next();
   }
 
-  if (isAuthorized && isPublicRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (apiCookies) {
+    apiCookies.forEach((cookie) => {
+      response.headers.append("set-cookie", cookie);
+    });
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
