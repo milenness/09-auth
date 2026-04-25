@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const proxy = (request: NextRequest) => {
+export function proxy(request: NextRequest) {
   const session = request.cookies.get("session")?.value;
   const { pathname } = request.nextUrl;
 
@@ -11,10 +11,14 @@ export const proxy = (request: NextRequest) => {
   if (!session && isPrivateRoute) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
-
+    
   if (session && isPublicRoute) {
     return NextResponse.redirect(new URL("/profile", request.url));
   }
 
   return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
